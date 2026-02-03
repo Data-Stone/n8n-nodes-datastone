@@ -30,68 +30,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "field-razao-social",
-              "name": "Razão Social",
-              "value": "={{ $json.company_name || $json.razao_social }}",
-              "type": "string"
-            },
-            {
-              "id": "field-nome-fantasia",
-              "name": "Nome Fantasia",
-              "value": "={{ $json.trading_name || $json.nome_fantasia }}",
-              "type": "string"
-            },
-            {
-              "id": "field-cnpj",
-              "name": "CNPJ",
-              "value": "={{ $json.cnpj }}",
-              "type": "string"
-            },
-            {
-              "id": "field-email",
-              "name": "Email",
-              "value": "={{ $json.email }}",
-              "type": "string"
-            },
-            {
-              "id": "field-dominio",
-              "name": "Domínio",
-              "value": "={{ $json.domain || $json.dominio }}",
-              "type": "string"
-            },
-            {
-              "id": "field-telefone",
-              "name": "Telefone",
-              "value": "={{ $json.phone || $json.telefone }}",
-              "type": "string"
-            },
-            {
-              "id": "field-uf",
-              "name": "UF",
-              "value": "={{ $json.uf || $json.state }}",
-              "type": "string"
-            },
-            {
-              "id": "field-cep",
-              "name": "CEP",
-              "value": "={{ $json.cep || $json.zip_code }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "f6f6f6f6-0003-4000-8000-000000000003",
-      "name": "Organizar Dados",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [720, 300]
-    },
-    {
-      "parameters": {
         "operation": "spreadsheet",
         "options": {
           "fileName": "=busca_empresa_{{ $now.format('yyyy-MM-dd_HH-mm') }}.csv",
@@ -102,11 +40,11 @@
       "name": "Gerar CSV",
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [980, 300]
+      "position": [720, 300]
     },
     {
       "parameters": {
-        "content": "## Busca de Empresa\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Preencha os filtros** no nó \"Buscar Empresa\":\n   - `razao_social`: Razão Social\n   - `email`: Email (opcional)\n   - `domain`: Domínio (opcional)\n   - `phone`: Telefone (opcional)\n   - `uf`: Estado (opcional)\n   - `cep`: CEP (opcional)\n3. **Execute** o workflow\n\n### Diferença para CNPJ:\nEsta busca encontra empresas por critérios\ncombinados, sem precisar do CNPJ.\nÚtil para descobrir o CNPJ de uma empresa\nconhecendo apenas o nome ou domínio.\n\n### Fluxo:\nInício → Buscar Empresa → Organizar → CSV",
+        "content": "## Busca de Empresa\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Preencha os filtros** no nó \"Buscar Empresa\":\n   - `razao_social`: Razão Social\n   - `email`: Email (opcional)\n   - `domain`: Domínio (opcional)\n   - `phone`: Telefone (opcional)\n   - `uf`: Estado (opcional)\n   - `cep`: CEP (opcional)\n3. **Execute** o workflow\n\n### Retorno:\nA API retorna todos os dados disponíveis\ndas empresas encontradas. Não precisa do\nCNPJ.\n\nO CSV é gerado com todos os campos.\n\n### Fluxo:\nInício → Buscar Empresa → Gerar CSV",
         "height": 420,
         "width": 340,
         "color": 4
@@ -134,17 +72,6 @@
       "main": [
         [
           {
-            "node": "Organizar Dados",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Organizar Dados": {
-      "main": [
-        [
-          {
             "node": "Gerar CSV",
             "type": "main",
             "index": 0
@@ -165,5 +92,5 @@
   ],
   "triggerCount": 0,
   "updatedAt": "2025-01-01T00:00:00.000Z",
-  "versionId": "template-busca-empresa-v1"
+  "versionId": "template-busca-empresa-v2"
 }

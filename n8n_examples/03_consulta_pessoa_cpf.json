@@ -13,8 +13,7 @@
       "parameters": {
         "resource": "person",
         "operation": "getByCpf",
-        "cpf": "000.000.000-00",
-        "fields": "name, birthday, age, gender, emails, addresses, mother_name, related_companies, employer"
+        "cpf": "000.000.000-00"
       },
       "id": "c3c3c3d4-0002-4000-8000-000000000002",
       "name": "Consultar CPF",
@@ -30,68 +29,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "field-nome",
-              "name": "Nome",
-              "value": "={{ $json.name }}",
-              "type": "string"
-            },
-            {
-              "id": "field-cpf",
-              "name": "CPF",
-              "value": "={{ $json.cpf }}",
-              "type": "string"
-            },
-            {
-              "id": "field-nascimento",
-              "name": "Data de Nascimento",
-              "value": "={{ $json.birthday }}",
-              "type": "string"
-            },
-            {
-              "id": "field-idade",
-              "name": "Idade",
-              "value": "={{ $json.age }}",
-              "type": "string"
-            },
-            {
-              "id": "field-genero",
-              "name": "Gênero",
-              "value": "={{ $json.gender }}",
-              "type": "string"
-            },
-            {
-              "id": "field-mae",
-              "name": "Nome da Mãe",
-              "value": "={{ $json.mother_name }}",
-              "type": "string"
-            },
-            {
-              "id": "field-emails",
-              "name": "Emails",
-              "value": "={{ Array.isArray($json.emails) ? $json.emails.join(', ') : $json.emails }}",
-              "type": "string"
-            },
-            {
-              "id": "field-empresa",
-              "name": "Empregador",
-              "value": "={{ $json.employer }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "c3c3c3d4-0003-4000-8000-000000000003",
-      "name": "Organizar Dados",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [720, 300]
-    },
-    {
-      "parameters": {
         "operation": "spreadsheet",
         "options": {
           "fileName": "=consulta_cpf_{{ $now.format('yyyy-MM-dd_HH-mm') }}.csv",
@@ -102,11 +39,11 @@
       "name": "Gerar CSV",
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [980, 300]
+      "position": [720, 300]
     },
     {
       "parameters": {
-        "content": "## Consulta de Pessoa por CPF\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Insira o CPF** no nó \"Consultar CPF\"\n   - Formato: `000.000.000-00`\n3. **Execute** o workflow\n\n### Campos retornados:\n- Nome, Data de Nascimento, Idade\n- Gênero, Nome da Mãe\n- Emails, Endereços\n- Empresas relacionadas, Empregador\n\nVocê pode ajustar o campo `fields` para\nselecionar apenas os dados desejados.\n\n### Fluxo:\nInício → Consultar CPF → Organizar → CSV",
+        "content": "## Consulta de Pessoa por CPF\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Insira o CPF** no nó \"Consultar CPF\"\n   - Formato: `000.000.000-00`\n3. **Execute** o workflow\n\n### Retorno:\nA API retorna todos os dados disponíveis\nda pessoa (nome, nascimento, idade, gênero,\nemails, endereços, nome da mãe, empresas\nrelacionadas, empregador, etc).\n\nO CSV é gerado com todos os campos.\n\n### Fluxo:\nInício → Consultar CPF → Gerar CSV",
         "height": 380,
         "width": 340,
         "color": 4
@@ -134,17 +71,6 @@
       "main": [
         [
           {
-            "node": "Organizar Dados",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Organizar Dados": {
-      "main": [
-        [
-          {
             "node": "Gerar CSV",
             "type": "main",
             "index": 0
@@ -165,5 +91,5 @@
   ],
   "triggerCount": 0,
   "updatedAt": "2025-01-01T00:00:00.000Z",
-  "versionId": "template-consulta-pessoa-cpf-v1"
+  "versionId": "template-consulta-pessoa-cpf-v2"
 }

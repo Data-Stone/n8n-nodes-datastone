@@ -30,56 +30,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "field-nome",
-              "name": "Nome",
-              "value": "={{ $json.name || $json.nome }}",
-              "type": "string"
-            },
-            {
-              "id": "field-cpf",
-              "name": "CPF",
-              "value": "={{ $json.cpf }}",
-              "type": "string"
-            },
-            {
-              "id": "field-email",
-              "name": "Email",
-              "value": "={{ Array.isArray($json.emails) ? $json.emails.join(', ') : ($json.email || '') }}",
-              "type": "string"
-            },
-            {
-              "id": "field-telefone",
-              "name": "Telefone",
-              "value": "={{ $json.phone || $json.telefone }}",
-              "type": "string"
-            },
-            {
-              "id": "field-endereco",
-              "name": "Endereço",
-              "value": "={{ $json.address || $json.endereco }}",
-              "type": "string"
-            },
-            {
-              "id": "field-uf",
-              "name": "UF",
-              "value": "={{ $json.uf || $json.state }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "d4d4d4d4-0003-4000-8000-000000000003",
-      "name": "Organizar Dados",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [720, 300]
-    },
-    {
-      "parameters": {
         "operation": "spreadsheet",
         "options": {
           "fileName": "=busca_pessoa_{{ $now.format('yyyy-MM-dd_HH-mm') }}.csv",
@@ -90,11 +40,11 @@
       "name": "Gerar CSV",
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [980, 300]
+      "position": [720, 300]
     },
     {
       "parameters": {
-        "content": "## Busca de Pessoa\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Preencha os filtros** no nó \"Buscar Pessoa\":\n   - `name`: Nome da pessoa\n   - `email`: Email (opcional)\n   - `phone`: Telefone (opcional)\n   - `uf`: Estado (opcional)\n   - `zip_code`: CEP (opcional)\n   - `mother`: Nome da mãe (opcional)\n3. **Execute** o workflow\n\n### Diferença para CPF:\nEsta busca encontra pessoas por critérios\ncombinados, sem precisar do CPF.\nÚtil para localizar contatos com dados\nparciais.\n\n### Fluxo:\nInício → Buscar Pessoa → Organizar → CSV",
+        "content": "## Busca de Pessoa\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Preencha os filtros** no nó \"Buscar Pessoa\":\n   - `name`: Nome da pessoa\n   - `email`: Email (opcional)\n   - `phone`: Telefone (opcional)\n   - `uf`: Estado (opcional)\n   - `zip_code`: CEP (opcional)\n   - `mother`: Nome da mãe (opcional)\n3. **Execute** o workflow\n\n### Retorno:\nA API retorna todos os dados disponíveis\ndas pessoas encontradas. Não precisa do CPF.\n\nO CSV é gerado com todos os campos.\n\n### Fluxo:\nInício → Buscar Pessoa → Gerar CSV",
         "height": 420,
         "width": 340,
         "color": 4
@@ -122,17 +72,6 @@
       "main": [
         [
           {
-            "node": "Organizar Dados",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Organizar Dados": {
-      "main": [
-        [
-          {
             "node": "Gerar CSV",
             "type": "main",
             "index": 0
@@ -153,5 +92,5 @@
   ],
   "triggerCount": 0,
   "updatedAt": "2025-01-01T00:00:00.000Z",
-  "versionId": "template-busca-pessoa-v1"
+  "versionId": "template-busca-pessoa-v2"
 }

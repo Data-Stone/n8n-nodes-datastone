@@ -76,62 +76,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "field-nome",
-              "name": "Nome",
-              "value": "={{ $json.nome || $json.name }}",
-              "type": "string"
-            },
-            {
-              "id": "field-cargo",
-              "name": "Cargo",
-              "value": "={{ $json.cargo || $json.title }}",
-              "type": "string"
-            },
-            {
-              "id": "field-departamento",
-              "name": "Departamento",
-              "value": "={{ $json.departamento || $json.department }}",
-              "type": "string"
-            },
-            {
-              "id": "field-email",
-              "name": "Email",
-              "value": "={{ $json.email }}",
-              "type": "string"
-            },
-            {
-              "id": "field-telefone",
-              "name": "Telefone",
-              "value": "={{ $json.telefone || $json.phone }}",
-              "type": "string"
-            },
-            {
-              "id": "field-linkedin",
-              "name": "LinkedIn",
-              "value": "={{ $json.url_linkedin || $json.linkedin }}",
-              "type": "string"
-            },
-            {
-              "id": "field-empresa",
-              "name": "Empresa",
-              "value": "={{ $json.empresa || $json.company_name }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "a1b2c3d4-0004-4000-8000-000000000004",
-      "name": "Organizar Dados",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [460, 600]
-    },
-    {
-      "parameters": {
         "operation": "spreadsheet",
         "options": {
           "fileName": "=prospeccao_b2b_{{ $now.format('yyyy-MM-dd_HH-mm') }}.csv",
@@ -142,11 +86,11 @@
       "name": "Gerar CSV",
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [720, 600]
+      "position": [460, 600]
     },
     {
       "parameters": {
-        "content": "## Prospecção B2B - Qualidade / Perdas / Prevenção\n\n### Como usar este template:\n\n1. **Configure a credencial** Data Stone API com sua API Key\n2. **Ajuste os filtros** no nó \"Prospectar Contatos B2B\"\n3. **Configure a URL do webhook** no nó \"Enriquecer Contato\":\n   - Substitua a URL pelo endereço real do seu n8n\n   - Ex: `https://seu-n8n.com/webhook/datastone-enrich-resultado`\n4. **Ative o workflow** para que o webhook fique escutando\n5. **Execute** o fluxo manualmente ou agende\n\n### Como funciona:\n\n**Fluxo superior (prospecção):**\nInício Manual → Prospectar → Enriquecer (dispara)\n\n**Fluxo inferior (resultado):**\nWebhook ← Data Stone envia resultado → Organizar Dados → Gerar CSV\n\nO enriquecimento é **assíncrono**: a Data Stone\nprocessa e envia o resultado para o webhook.\nO CSV é gerado automaticamente com os dados\norganizados e pode ser baixado no n8n ou\nencaminhado para email/Google Drive/etc.\n\n**Importante:** O webhook aceita HEAD e POST\nporque a Data Stone valida a URL com HEAD\nantes de enviar os dados via POST.",
+        "content": "## Prospecção B2B - Qualidade / Perdas / Prevenção\n\n### Como usar este template:\n\n1. **Configure a credencial** Data Stone API com sua API Key\n2. **Ajuste os filtros** no nó \"Prospectar Contatos B2B\"\n3. **Configure a URL do webhook** no nó \"Enriquecer Contato\":\n   - Substitua a URL pelo endereço real do seu n8n\n   - Ex: `https://seu-n8n.com/webhook/datastone-enrich-resultado`\n4. **Ative o workflow** para que o webhook fique escutando\n5. **Execute** o fluxo manualmente ou agende\n\n### Como funciona:\n\n**Fluxo superior (prospecção):**\nInício Manual → Prospectar → Enriquecer (dispara)\n\n**Fluxo inferior (resultado):**\nWebhook ← Data Stone envia resultado → Gerar CSV\n\nO enriquecimento é **assíncrono**: a Data Stone\nprocessa e envia o resultado para o webhook.\nO CSV é gerado automaticamente com todos os\ncampos retornados e pode ser baixado no n8n\nou encaminhado para email/Google Drive/etc.\n\n**Importante:** O webhook aceita HEAD e POST\nporque a Data Stone valida a URL com HEAD\nantes de enviar os dados via POST.",
         "height": 520,
         "width": 380,
         "color": 4
@@ -155,7 +99,7 @@
       "name": "Instruções",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [820, 180]
+      "position": [720, 180]
     }
   ],
   "connections": {
@@ -185,17 +129,6 @@
       "main": [
         [
           {
-            "node": "Organizar Dados",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Organizar Dados": {
-      "main": [
-        [
-          {
             "node": "Gerar CSV",
             "type": "main",
             "index": 0
@@ -210,23 +143,11 @@
   },
   "staticData": null,
   "tags": [
-    {
-      "name": "B2B",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "name": "Prospecção",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "name": "Data Stone",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    }
+    { "name": "B2B", "createdAt": "2025-01-01T00:00:00.000Z", "updatedAt": "2025-01-01T00:00:00.000Z" },
+    { "name": "Prospecção", "createdAt": "2025-01-01T00:00:00.000Z", "updatedAt": "2025-01-01T00:00:00.000Z" },
+    { "name": "Data Stone", "createdAt": "2025-01-01T00:00:00.000Z", "updatedAt": "2025-01-01T00:00:00.000Z" }
   ],
   "triggerCount": 1,
   "updatedAt": "2025-01-01T00:00:00.000Z",
-  "versionId": "template-prospeccao-b2b-v2"
+  "versionId": "template-prospeccao-b2b-v3"
 }

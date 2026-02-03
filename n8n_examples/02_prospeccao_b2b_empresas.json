@@ -72,68 +72,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "field-razao-social",
-              "name": "Razão Social",
-              "value": "={{ $json.company_name || $json.razao_social }}",
-              "type": "string"
-            },
-            {
-              "id": "field-nome-fantasia",
-              "name": "Nome Fantasia",
-              "value": "={{ $json.trading_name || $json.nome_fantasia }}",
-              "type": "string"
-            },
-            {
-              "id": "field-cnpj",
-              "name": "CNPJ",
-              "value": "={{ $json.cnpj }}",
-              "type": "string"
-            },
-            {
-              "id": "field-setor",
-              "name": "Setor",
-              "value": "={{ $json.setor || $json.sector }}",
-              "type": "string"
-            },
-            {
-              "id": "field-tamanho",
-              "name": "Tamanho",
-              "value": "={{ $json.tamanho || $json.company_size }}",
-              "type": "string"
-            },
-            {
-              "id": "field-email",
-              "name": "Email",
-              "value": "={{ $json.email }}",
-              "type": "string"
-            },
-            {
-              "id": "field-telefone",
-              "name": "Telefone",
-              "value": "={{ $json.telefone || $json.phone }}",
-              "type": "string"
-            },
-            {
-              "id": "field-linkedin",
-              "name": "LinkedIn",
-              "value": "={{ $json.url_linkedin || $json.linkedin }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "b2b2c3d4-0004-4000-8000-000000000004",
-      "name": "Organizar Dados",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [460, 600]
-    },
-    {
-      "parameters": {
         "operation": "spreadsheet",
         "options": {
           "fileName": "=prospeccao_empresas_b2b_{{ $now.format('yyyy-MM-dd_HH-mm') }}.csv",
@@ -144,11 +82,11 @@
       "name": "Gerar CSV",
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [720, 600]
+      "position": [460, 600]
     },
     {
       "parameters": {
-        "content": "## Prospecção B2B - Empresas por Setor\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Ajuste os filtros** no nó \"Prospectar Empresas B2B\":\n   - Setores, tamanhos, estados, etc.\n3. **Configure a URL do webhook** no nó \"Enriquecer Empresa\"\n4. **Ative o workflow** e execute\n\n### Fluxo:\n\n**Superior (prospecção):**\nInício → Prospectar Empresas → Enriquecer\n\n**Inferior (resultado):**\nWebhook → Organizar Dados → Gerar CSV\n\nO enriquecimento é assíncrono.\nO CSV é gerado automaticamente.",
+        "content": "## Prospecção B2B - Empresas por Setor\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Ajuste os filtros** no nó \"Prospectar Empresas B2B\":\n   - Setores, tamanhos, estados, etc.\n3. **Configure a URL do webhook** no nó \"Enriquecer Empresa\"\n4. **Ative o workflow** e execute\n\n### Fluxo:\n\n**Superior (prospecção):**\nInício → Prospectar Empresas → Enriquecer\n\n**Inferior (resultado):**\nWebhook → Gerar CSV\n\nO enriquecimento é assíncrono.\nO CSV é gerado automaticamente com todos\nos campos retornados pela API.",
         "height": 420,
         "width": 380,
         "color": 4
@@ -157,7 +95,7 @@
       "name": "Instruções",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [820, 180]
+      "position": [720, 180]
     }
   ],
   "connections": {
@@ -187,17 +125,6 @@
       "main": [
         [
           {
-            "node": "Organizar Dados",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Organizar Dados": {
-      "main": [
-        [
-          {
             "node": "Gerar CSV",
             "type": "main",
             "index": 0
@@ -218,5 +145,5 @@
   ],
   "triggerCount": 1,
   "updatedAt": "2025-01-01T00:00:00.000Z",
-  "versionId": "template-prospeccao-b2b-empresas-v1"
+  "versionId": "template-prospeccao-b2b-empresas-v2"
 }
