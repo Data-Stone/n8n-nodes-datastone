@@ -1,0 +1,175 @@
+{
+  "name": "Consulta de Empresa por CNPJ",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e5e5e5e5-0001-4000-8000-000000000001",
+      "name": "Início Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "resource": "company",
+        "operation": "getByCnpj",
+        "cnpj": "00.000.000/0000-00",
+        "fields": "company_name, trading_name, cnpj, emails, partners, creation_date, business_size, cnae_code, cnae_description, addresses, land_lines, mobile_phones"
+      },
+      "id": "e5e5e5e5-0002-4000-8000-000000000002",
+      "name": "Consultar CNPJ",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "field-razao-social",
+              "name": "Razão Social",
+              "value": "={{ $json.company_name || $json.razao_social }}",
+              "type": "string"
+            },
+            {
+              "id": "field-nome-fantasia",
+              "name": "Nome Fantasia",
+              "value": "={{ $json.trading_name || $json.nome_fantasia }}",
+              "type": "string"
+            },
+            {
+              "id": "field-cnpj",
+              "name": "CNPJ",
+              "value": "={{ $json.cnpj }}",
+              "type": "string"
+            },
+            {
+              "id": "field-data-criacao",
+              "name": "Data de Criação",
+              "value": "={{ $json.creation_date }}",
+              "type": "string"
+            },
+            {
+              "id": "field-porte",
+              "name": "Porte",
+              "value": "={{ $json.business_size }}",
+              "type": "string"
+            },
+            {
+              "id": "field-cnae",
+              "name": "CNAE",
+              "value": "={{ $json.cnae_code }} - {{ $json.cnae_description }}",
+              "type": "string"
+            },
+            {
+              "id": "field-emails",
+              "name": "Emails",
+              "value": "={{ Array.isArray($json.emails) ? $json.emails.join(', ') : ($json.emails || '') }}",
+              "type": "string"
+            },
+            {
+              "id": "field-telefones",
+              "name": "Telefones",
+              "value": "={{ Array.isArray($json.land_lines) ? $json.land_lines.join(', ') : ($json.land_lines || '') }}",
+              "type": "string"
+            },
+            {
+              "id": "field-socios",
+              "name": "Sócios",
+              "value": "={{ Array.isArray($json.partners) ? $json.partners.map(p => p.name || p).join(', ') : ($json.partners || '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e5e5e5e5-0003-4000-8000-000000000003",
+      "name": "Organizar Dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "operation": "spreadsheet",
+        "options": {
+          "fileName": "=consulta_cnpj_{{ $now.format('yyyy-MM-dd_HH-mm') }}.csv",
+          "headerRow": true
+        }
+      },
+      "id": "e5e5e5e5-0004-4000-8000-000000000004",
+      "name": "Gerar CSV",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [980, 300]
+    },
+    {
+      "parameters": {
+        "content": "## Consulta de Empresa por CNPJ\n\n### Como usar:\n\n1. **Configure a credencial** Data Stone API\n2. **Insira o CNPJ** no nó \"Consultar CNPJ\"\n   - Formato: `00.000.000/0000-00`\n3. **Execute** o workflow\n\n### Campos retornados:\n- Razão Social, Nome Fantasia\n- CNPJ, Data de Criação, Porte\n- CNAE (código + descrição)\n- Emails, Telefones\n- Sócios, Filiais\n\nAjuste o campo `fields` para selecionar\napenas os dados desejados.\n\n### Fluxo:\nInício → Consultar CNPJ → Organizar → CSV",
+        "height": 380,
+        "width": 340,
+        "color": 4
+      },
+      "id": "e5e5e5e5-0005-4000-8000-000000000005",
+      "name": "Instruções",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [200, 500]
+    }
+  ],
+  "connections": {
+    "Início Manual": {
+      "main": [
+        [
+          {
+            "node": "Consultar CNPJ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar CNPJ": {
+      "main": [
+        [
+          {
+            "node": "Organizar Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizar Dados": {
+      "main": [
+        [
+          {
+            "node": "Gerar CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    { "name": "Empresa", "createdAt": "2025-01-01T00:00:00.000Z", "updatedAt": "2025-01-01T00:00:00.000Z" },
+    { "name": "CNPJ", "createdAt": "2025-01-01T00:00:00.000Z", "updatedAt": "2025-01-01T00:00:00.000Z" },
+    { "name": "Data Stone", "createdAt": "2025-01-01T00:00:00.000Z", "updatedAt": "2025-01-01T00:00:00.000Z" }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-01T00:00:00.000Z",
+  "versionId": "template-consulta-empresa-cnpj-v1"
+}
