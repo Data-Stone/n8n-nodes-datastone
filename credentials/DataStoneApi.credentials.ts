@@ -8,7 +8,7 @@ import {
 export class DataStoneApi implements ICredentialType {
 	name = 'dataStoneApi';
 	displayName = 'Data Stone API';
-	documentationUrl = 'https://doc.datastone.com.br';
+	documentationUrl = 'https://docs.datastone.com.br';
 
 	properties: INodeProperties[] = [
 		{
