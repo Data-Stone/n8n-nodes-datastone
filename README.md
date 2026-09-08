@@ -63,9 +63,13 @@ No n8n, crie uma nova credencial **Data Stone API** e cole sua API key.
 | **Enriquecer** | Enriquece um contato (por URL do LinkedIn, email ou ID) |
 | **Enriquecer em Lote** | Enriquece múltiplos contatos de uma vez |
 
-**Filtros de pessoa (`filtros_pessoa`):** `departamentos`, `niveis_senioridade`, `cargos`, `habilidades`, `localizacoes`, `estados`, `has_email`, `has_phone`, `has_cnpj`, `has_linkedin`
+**Filtros de pessoa (`filtros_pessoa`):** `departamentos`, `niveis_senioridade`, `cargos`, `habilidades`, `localizacoes`, `estados`, `has_email`, `has_phone`, `has_linkedin`
 
-**Filtros de empresa (`filtros_empresa`):** `nome_empresa`, `localizacoes`, `estados`, `setores`, `atividades_cnae`, `especialidades`, `tamanhos_empresa`, `naturezas_juridicas`, `data_fundacao`, `faixa_receita`, `incluir_mei`, `tem_cnpj`, `tem_email`, `tem_telefone`, `tem_linkedin`
+**Filtros de empresa (`filtros_empresa`):** `nome_empresa`, `localizacoes`, `estados`, `setores`, `atividades_cnae`, `tamanhos_empresa`, `tipos_trabalho`, `naturezas_juridicas`, `data_fundacao`, `incluir_mei`, `tem_email`, `tem_telefone`, `tem_linkedin`
+
+> **Ano de fundação.** O filtro é por **ano**, não por data: a base B2B guarda só o ano de fundação. Os campos são "Ano de Fundação (Mínimo)" e "(Máximo)" — informar só um deles vale como "a partir de" / "até". Empresas cujo ano de fundação é desconhecido ficam de fora sempre que o filtro é usado.
+
+> A API aceita mais filtros de empresa do que o node expõe hoje (`especialidades`, `setores_cnae`, `faixa_receita`, `tem_cnpj`) e `has_cnpj` em filtros de pessoa. Para usá-los, chame a API direto por um nó HTTP Request.
 
 ### B2B Empresa
 

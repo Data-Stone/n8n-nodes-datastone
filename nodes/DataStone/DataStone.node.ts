@@ -732,6 +732,22 @@ export class DataStone implements INodeType {
 						default: false,
 						description: 'Whether to filter only companies that have a LinkedIn page',
 					},
+					{
+						displayName: 'Ano De Fundação (Mínimo)',
+						name: 'ano_fundacao_min',
+						type: 'number',
+						default: 0,
+						placeholder: '2015',
+						description: 'Ano de fundação mínimo. A base B2B guarda apenas o ANO, não a data. Informar só este campo vale como "fundadas a partir de".',
+					},
+					{
+						displayName: 'Ano De Fundação (Máximo)',
+						name: 'ano_fundacao_max',
+						type: 'number',
+						default: 0,
+						placeholder: '2024',
+						description: 'Ano de fundação máximo. Informar só este campo vale como "fundadas até". Atenção: empresas com ano de fundação desconhecido ficam de fora sempre que este filtro é usado.',
+					},
 				],
 			},
 			{
@@ -1000,6 +1016,22 @@ export class DataStone implements INodeType {
 						default: false,
 						description: 'Whether to filter only companies that have a LinkedIn page',
 					},
+					{
+						displayName: 'Ano De Fundação (Mínimo)',
+						name: 'ano_fundacao_min',
+						type: 'number',
+						default: 0,
+						placeholder: '2015',
+						description: 'Ano de fundação mínimo. A base B2B guarda apenas o ANO, não a data. Informar só este campo vale como "fundadas a partir de".',
+					},
+					{
+						displayName: 'Ano De Fundação (Máximo)',
+						name: 'ano_fundacao_max',
+						type: 'number',
+						default: 0,
+						placeholder: '2024',
+						description: 'Ano de fundação máximo. Informar só este campo vale como "fundadas até". Atenção: empresas com ano de fundação desconhecido ficam de fora sempre que este filtro é usado.',
+					},
 				],
 			},
 
@@ -1188,6 +1220,17 @@ export class DataStone implements INodeType {
 			if (raw.tem_email) filtros.tem_email = true;
 			if (raw.tem_telefone) filtros.tem_telefone = true;
 			if (raw.tem_linkedin) filtros.tem_linkedin = true;
+			// data_fundacao é faixa de ANO, não de data: a base B2B guarda só
+			// ANO_FUNDACAO. A API aceita um limite sozinho e completa o outro com a
+			// borda da faixa, então "a partir de 2015" não obriga a inventar um teto.
+			const anoMin = Number(raw.ano_fundacao_min) || 0;
+			const anoMax = Number(raw.ano_fundacao_max) || 0;
+			if (anoMin || anoMax) {
+				const dataFundacao: IDataObject = {};
+				if (anoMin) dataFundacao.data_inicio = anoMin;
+				if (anoMax) dataFundacao.data_fim = anoMax;
+				filtros.data_fundacao = dataFundacao;
+			}
 			return filtros;
 		};
 
