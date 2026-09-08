@@ -1,0 +1,185 @@
+{
+  "name": "B2B sem webhook: prospectar, enriquecer (síncrono) e validar WhatsApp",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b7-0001-4000-8000-000000000001",
+      "name": "Início Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "b2bMeta",
+        "operation": "filterOptions"
+      },
+      "id": "b7-0002-4000-8000-000000000002",
+      "name": "Opções de Filtro (grátis)",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        400,
+        140
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "b2bPerson",
+        "operation": "prospect",
+        "pagina": 1,
+        "porPagina": 10,
+        "filtrosPessoa": {
+          "niveis_senioridade": [
+            "Decisores"
+          ],
+          "has_email": true,
+          "has_phone": true,
+          "estados": [
+            "SP"
+          ]
+        },
+        "filtrosEmpresa": {
+          "setores": "Tecnologia da Informação",
+          "tamanhos_empresa": [
+            "51-200",
+            "201-500"
+          ],
+          "ano_fundacao_min": 2015
+        }
+      },
+      "id": "b7-0003-4000-8000-000000000003",
+      "name": "Prospectar Decisores",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "b2bPerson",
+        "operation": "enrichSync",
+        "syncPessoaId": "={{ $json.id_pessoa }}"
+      },
+      "id": "b7-0004-4000-8000-000000000004",
+      "name": "Enriquecer (Síncrono)",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        640,
+        300
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "resource": "whatsapp",
+        "operation": "validate",
+        "phone": "={{ $json.telefones?.[0] ?? $json.telefone }}"
+      },
+      "id": "b7-0005-4000-8000-000000000005",
+      "name": "Validar WhatsApp",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        880,
+        300
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "width": 620,
+        "height": 300,
+        "content": "## B2B sem webhook\n\n**Enriquecer (Síncrono)** devolve e-mail e telefone na própria resposta, então o nó seguinte já consome o dado — não precisa de webhook nem de endereço público.\n\n**Retry On Fail está ligado** no nó de enriquecimento de propósito: a execução síncrona tem teto de chamadas simultâneas e responde `429` quando não há vaga. O `429` **não debita crédito**, então repetir é seguro.\n\n### Custo\n- Opções de Filtro: **grátis**\n- Prospectar: **1 crédito** pela busca (paginar com a chave de cache é grátis)\n- Enriquecer: **1 crédito por contato**, estornado quando não vem dado\n- Validar WhatsApp: cobra por número\n\nPara **volume**, troque o enriquecimento síncrono por **Enriquecer em Lote** e receba por webhook: o síncrono aceita um contato por chamada."
+      },
+      "id": "b7-0006-4000-8000-000000000006",
+      "name": "Instruções",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Início Manual": {
+      "main": [
+        [
+          {
+            "node": "Opções de Filtro (grátis)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prospectar Decisores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prospectar Decisores": {
+      "main": [
+        [
+          {
+            "node": "Enriquecer (Síncrono)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enriquecer (Síncrono)": {
+      "main": [
+        [
+          {
+            "node": "Validar WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-08T00:00:00.000Z",
+  "versionId": "b7000000-0000-4000-8000-000000000007"
+}

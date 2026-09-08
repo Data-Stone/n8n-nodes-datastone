@@ -12,6 +12,8 @@ Workflows prontos para importar no n8n usando o nó comunitário [n8n-nodes-data
 | 04 | [Busca de Pessoa](04_busca_pessoa.json) | Busca pessoas por nome, email, telefone, UF | Pessoa |
 | 05 | [Consulta Empresa por CNPJ](05_consulta_empresa_cnpj.json) | Consulta dados completos de uma empresa pelo CNPJ | Empresa |
 | 06 | [Busca de Empresa](06_busca_empresa.json) | Busca empresas por razão social, email, domínio, UF | Empresa |
+| 07 | [B2B sem webhook (síncrono)](07_b2b_sem_webhook_sincrono.json) | Prospecta decisores, enriquece de forma **síncrona** (sem webhook) e valida WhatsApp | B2B Pessoa |
+| 08 | [Prospecção B2C: contar antes de exportar](08_prospeccao_b2c_contar_antes.json) | Acha o CNAE, conta de graça e só então exporta da base da Receita | Prospecção B2C |
 
 ---
 
@@ -91,9 +93,18 @@ Após importar o template, você precisa configurar algumas coisas:
 - Edite os filtros de busca/prospecção conforme sua necessidade
 - Nos templates 03 e 05, substitua o CPF/CNPJ de exemplo pelo real
 
-### 3. Para templates com webhook (01 e 02)
+### 3. Webhook: quando você precisa e quando não precisa
 
-Os templates de prospecção B2B usam enriquecimento assíncrono. Isso significa que a Data Stone processa os dados e envia o resultado de volta para o seu n8n via webhook. Para funcionar:
+**Para um registro, não precisa mais.** A operação **Enriquecer (Síncrono)** devolve o
+resultado na própria resposta — mesma base, mesma cascata de fornecedores, mesmo custo.
+O template **07** é esse caminho: nada de webhook, nada de endereço público, e o nó
+seguinte já consome e-mail e telefone. Se você está começando agora, comece por ele.
+
+**Para volume, o webhook continua sendo o caminho.** O **Enriquecer em Lote** é
+assíncrono por desenho e aceita muitos registros de uma vez; o síncrono aceita
+exatamente um por chamada. É o que os templates **01** e **02** fazem.
+
+Nos templates 01 e 02, para o webhook funcionar:
 
 - No nó **"Enriquecer Contato"** (ou "Enriquecer Empresa"), substitua a URL do webhook pela URL real do seu n8n:
   ```
@@ -101,6 +112,25 @@ Os templates de prospecção B2B usam enriquecimento assíncrono. Isso significa
   ```
 - **Ative o workflow** (toggle no canto superior direito) para que o webhook comece a escutar
 - Só depois execute o fluxo
+
+#### Os três desfechos do síncrono
+
+| Resposta | Significado | O que fazer |
+|---|---|---|
+| **200** | Concluído | Usar o resultado |
+| **202** | Segue processando | O nó devolve `_sync_status: "processing"` e `_status_path`; consulte esse caminho depois |
+| **429** | Sem vaga para execução síncrona. **Nenhum crédito debitado** | Repetir — o template 07 já vem com **Retry On Fail** ligado — ou usar o assíncrono |
+
+O `429` é controle de carga, não limite de plano: a execução síncrona mantém a conexão
+aberta enquanto consulta os fornecedores, então existe um teto de chamadas simultâneas.
+
+### 4. Para o template 08 (prospecção B2C)
+
+**Contar é grátis; exportar cobra por registro.** Ajuste o filtro no nó de contagem até
+o total fazer sentido e só então rode a exportação, com os MESMOS filtros. Três formatos
+que erram em silêncio se vierem diferentes: cidade é `"Cidade - UF"` (hífen, diferente
+do B2B), bairro é `"BAIRRO - CIDADE - UF"`, e o filtro **Nome** é obrigatório na
+exportação porque a API o usa como nome do job.
 
 ---
 

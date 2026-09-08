@@ -1,0 +1,187 @@
+{
+  "name": "Prospecção B2C: contar de graça antes de exportar",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b8-0001-4000-8000-000000000001",
+      "name": "Início Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "auxiliary",
+        "operation": "cnae",
+        "auxDescription": "desenvolvimento de programas",
+        "auxPage": 1,
+        "auxPageSize": 20
+      },
+      "id": "b8-0002-4000-8000-000000000002",
+      "name": "Achar o CNAE (grátis)",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        400,
+        140
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "prospection",
+        "operation": "countCompanies",
+        "filtrosProspeccaoEmpresas": {
+          "states": "SP",
+          "cnae_codes": "6201501",
+          "company_type": [
+            "ME",
+            "EPP"
+          ],
+          "headquarter_type": "H",
+          "created_start": "2020-01-01"
+        }
+      },
+      "id": "b8-0003-4000-8000-000000000003",
+      "name": "Contar Empresas (grátis)",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "prospection",
+        "operation": "exportCompanies",
+        "filtrosProspeccaoEmpresas": {
+          "name": "TECNOLOGIA SP",
+          "states": "SP",
+          "cnae_codes": "6201501",
+          "company_type": [
+            "ME",
+            "EPP"
+          ],
+          "headquarter_type": "H",
+          "created_start": "2020-01-01"
+        },
+        "prospeccaoQuantidade": 500,
+        "prospeccaoFormato": "excel"
+      },
+      "id": "b8-0004-4000-8000-000000000004",
+      "name": "Exportar Empresas (cobra)",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        660,
+        300
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "prospection",
+        "operation": "getResult",
+        "prospeccaoJobId": "={{ $json.job_id }}"
+      },
+      "id": "b8-0005-4000-8000-000000000005",
+      "name": "Obter Resultado",
+      "type": "n8n-nodes-datastone.dataStone",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ],
+      "credentials": {
+        "dataStoneApi": {
+          "id": "",
+          "name": "Data Stone API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "width": 660,
+        "height": 320,
+        "content": "## Prospecção B2C (base da Receita)\n\n**Contar é grátis. Exportar cobra por registro.** Ajuste o filtro no nó de contagem até o total fazer sentido, e só então rode a exportação — com os MESMOS filtros.\n\n### Três formatos que erram em silêncio\n- cidade é `\"Cidade - UF\"`, com **hífen** (o B2B usa vírgula)\n- bairro é `\"BAIRRO - CIDADE - UF\"`, três partes\n- na exportação o filtro **Nome** é obrigatório: a API o usa como nome do job\n\n### Dois avisos que economizam crédito\n- a API **não ordena por relevância**: exportar 500 de 20.000 devolve os 500 primeiros da fonte, então estreite o filtro em vez de aumentar a quantidade;\n- o zip de empresas **já traz os sócios** (`socios_*.xlsx`) — não exporte pessoas para obter sócio, porque lá o CNAE não vale e o resultado vira a população da cidade.\n\n`headquarter_type: H` (somente matriz) evita repetir filiais do mesmo grupo."
+      },
+      "id": "b8-0006-4000-8000-000000000006",
+      "name": "Instruções",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Início Manual": {
+      "main": [
+        [
+          {
+            "node": "Achar o CNAE (grátis)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Contar Empresas (grátis)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contar Empresas (grátis)": {
+      "main": [
+        [
+          {
+            "node": "Exportar Empresas (cobra)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exportar Empresas (cobra)": {
+      "main": [
+        [
+          {
+            "node": "Obter Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-08T00:00:00.000Z",
+  "versionId": "b8000000-0000-4000-8000-000000000008"
+}
